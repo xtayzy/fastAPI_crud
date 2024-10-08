@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
 from datebase import async_session_maker
-from posts.models import Post
+from posts.models import Post, Task
 from repository.base import BaseRepository
 
 
@@ -20,4 +20,7 @@ class PostRepository(BaseRepository):
     #             raise HTTPException(status_code=404, detail="obj not found")
     #         return result
 
+
+class TaskRepository(BaseRepository):
+    model = Task
 

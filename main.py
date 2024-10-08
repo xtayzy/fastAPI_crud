@@ -3,40 +3,39 @@ from typing import List
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from posts.rep import PostRepository
+from posts.rep import PostRepository, TaskRepository
 
 app = FastAPI()
 
 
-@app.get('/posts')
-async def get_all_posts():
-    posts = await PostRepository.get_all()
-    return posts
-
-
-@app.get('/posts/{post_id}')
-async def get_post_by_id(post_id: int):
-    post = await PostRepository.get_by_id(pk=post_id)
-    return post
-
-
-@app.delete('/posts/delete/{post_id}')
-async def delete_post(post_id: int):
-    post = await PostRepository.delete(pk=post_id)
-    return post
-
-
-class PostData(BaseModel):
+class TaskData(BaseModel):
     title: str
     description: str
+    completed: bool = False
 
 
-@app.patch('/posts/update/{post_id}')
-async def update_post(data: PostData, post_id: int):
-    post = await PostRepository.update(pk=post_id, **data.dict())
-    return post
+@app.get('/tasks')
+async def get_all_tasks():
+    tasks = await TaskRepository.get_all()
+    return tasks
 
 
-@app.post('/posts')
-async def post_post(data: PostData):
-    return await PostRepository.create(data=data)
+@app.get('/tasks/{task_id}')
+async def get_task(task_id: int):
+    return await TaskRepository.get_by_id(task_id)
+
+
+@app.post('/tasks')
+async def create_task(data: TaskData):
+    return await TaskRepository.create(data)
+
+
+@app.patch('/tasks/{task_id}')
+async def update_task(task_id: int, data: TaskData):
+    return await TaskRepository.update(task_id, **data.dict())
+
+
+@app.delete('/tasks/{task_id}')
+async def delete_task(task_id: int):
+    return await TaskRepository.delete(task_id)
+
